@@ -63,6 +63,7 @@ import qualified GHC as G
 ----------------------------------------------------------------
 ----------------------------------------------------------------
 
+import GHC.Data.OsPath (unsafeEncodeUtf, unsafeDecodeUtf)
 import GHC.Driver.Env as G
 import GHC.Driver.Session as G
 import GHC.Driver.Hooks
@@ -138,7 +139,7 @@ set_hsc_dflags dflags hsc_env = hsc_env { G.hsc_dflags = dflags }
 
 overPkgDbRef :: (FilePath -> FilePath) -> G.PackageDBFlag -> G.PackageDBFlag
 overPkgDbRef f (G.PackageDB pkgConfRef) = G.PackageDB $ case pkgConfRef of
-    G.PkgDbPath fp -> G.PkgDbPath (f fp)
+    G.PkgDbPath fp -> G.PkgDbPath (unsafeEncodeUtf (f (unsafeDecodeUtf fp)))
     conf -> conf
 overPkgDbRef _f db = db
 
